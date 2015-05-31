@@ -1,6 +1,7 @@
 jThree( function( j3 ) {
     $( "#loading" ).remove();
     j3.Trackball();
+    j3.MMD.play();
 
     // フレームレート計測
     var fps = 0;
