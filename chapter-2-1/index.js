@@ -3,6 +3,10 @@ jThree( function( j3 ) {
     j3.Trackball();
     j3.MMD.play(true);
 
+    // MMDのTHREE.jsオブジェクト取得
+    var obj3d = j3("mmd").three(0);
+    console.log(obj3d);
+
     // フレームレート計測
     var fps = 0;
     var field_fps = $("#stat-fps");
