@@ -31,3 +31,10 @@ body > audio {
     font-size: 30px;
     color: white;
 }
+
+#console-ui {
+    position: fixed;
+    bottom:5px;
+    left: 20%;
+    width: 60%;
+}

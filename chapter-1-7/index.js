@@ -11,6 +11,14 @@ jThree( function( j3 ) {
         field_fps.html('' + fps + ' fps');
     });
 
+    // モーション制御ボタンの挙動
+    $("#btn-play").click(function (){
+        j3.MMD.play();
+    });
+    $("#btn-stop").click(function (){
+        j3.MMD.pause();
+    });
+
 },
 function() {
     alert( "This browser does not support WebGL." );
