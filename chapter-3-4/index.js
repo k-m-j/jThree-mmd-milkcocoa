@@ -39,11 +39,96 @@ jThree( function( j3 ) {
 
         // Bone状態を表示させるハンドルオブジェクトの生成
         boneHandle += '<mesh id="bonehandle-' + val.index + '" class="handle" geo="#geo-cube" mtl="#mtl-blue" style="position: '+w_boneVector.x+' '+w_boneVector.y+' '+w_boneVector.z+';"><mesh geo="#geo-corn" mtl="#mtl-blue" style="positionY:0.6;"></mesh></mesh>';
-
+        // コンソールに処理済みのボーン情報を表示(確認用)
         console.log("bone[" + val.index + "] (" + bone.name + ") assoc_kinect[" + key + "] has child: bone[" + jointList[val.child].index + "] (" + child.name + ") assoc_kinect[" + val.child + "]");
     } );
     // Bone状態を表示させるハンドルオブジェクトの生成(jThreeに反映)
     j3("#bonehandles").append(boneHandle);
+
+
+    // 状態制御コード
+    var lock_id = null;                  // 現在操作中の物体のID
+    var handle_rotate = null;            // rotate操作中の軸
+    var handle_start_y= null;            // クリック開始地点(画面高さ)
+    var handle_rotate_start_3d = null;   // 回転初期値
+
+    // 操作物体の確定
+    j3(".handle").click(
+        function(){
+            if(lock_id) j3("#" + lock_id).css('mtlColor',"#0000ff");        // 以前に操作中だった物体の色をもとに戻す
+            j3(this).css('mtlColor',"#ffff00");                             // 操作中の物体の色を黄色に変える
+            lock_id = j3(this).attr('id');                                  // lock_id 変数にIDを覚えておく
+        }
+    );
+
+
+    // 回転用のハンドルを押したとき
+    $(".rot-handle").mousedown(function(e){
+        handle_rotate = $(this).attr("data-axis");      // ボタンの data-axis プロパティ取得{X,Y,Z}
+        handle_start_y = e.pageY;                       // ボタンを押したときの画面のY座標を記憶しておく
+        handle_rotate_start_3d = j3("#" + lock_id).css('rotate' + handle_rotate);  // 操作中の物体の現在の角度を記憶しておく
+    });
+    // マウスを動かしたとき(常に走る)
+    $("body").mousemove(function(e) {
+        if(lock_id && handle_rotate){
+            // 回転操作中
+            var moveDelta = handle_start_y - e.pageY;        // ボタンを押したときからの位置変動を計算(Yのみ)
+            var resultRotate = handle_rotate_start_3d + (-moveDelta / 20);    // 最終角度を計算
+            j3("#" + lock_id).css('rotate' + handle_rotate, resultRotate );  // 回転を適用
+        }
+    });
+    // マウスボタンを離したとき(ハンドルの消去)
+    $("body").mouseup(function(){
+        handle_rotate = null;
+    });
+
+    $("#display-guide").click(function(){
+        if(j3("#bonehandles").css("display")){
+            console.log('Display off');
+            j3("#bonehandles").css("display",false);
+        }else{
+            console.log('Display on');
+            j3("#bonehandles").css("display",true);
+        }
+    });
+
+
+    // モーション更新関数
+    j3.update( function(d){
+        // 胴体-首 , 左肩-左手 , 右肩-右手 , 左腰-左つま先 , 右腰-右つま先 にそれぞれ親から子に遡ってモーションを探索する
+        ["SpineMid","ShoulderLeft","ShoulderRight","HipLeft","HipRight"].forEach(function(key,idx){
+
+            // 子がある場合のみ向きを反映する(末端は向きを変えない)
+            while ( jointList[key].child ) {
+                // 作用ボーン取得
+                var bone = bones[jointList[key].index];
+
+                // 関節の回転角度取得
+                var rot_x = j3("#bonehandle-" + jointList[key].index).css('rotateX');
+                var rot_y = j3("#bonehandle-" + jointList[key].index).css('rotateY');
+                var rot_z = j3("#bonehandle-" + jointList[key].index).css('rotateZ');
+
+                // boneのポジション
+                var w_pos = new THREE.Vector3();
+                // 現在のboneの位置をワールド座標に変換
+                bone.parent.localToWorld( w_pos.copy( bone.position ) );
+                // ジョイントハンドルの位置をモデルに合わせる
+                j3("#bonehandle-" + jointList[key].index).css('position','' + w_pos.x + ' ' + w_pos.y + ' ' + w_pos.z );
+
+                // boneの向き先
+                var rotation = new THREE.Vector3();
+                rotation.set( rot_x,  rot_y,  rot_z);
+                // オイラー角をクォータニオンに変換
+                bone.quaternion.setFromEuler(rotation, 'XYZ');
+
+                // ワールド座標系を更新
+                bone.parent.updateMatrixWorld(true);
+
+                // 子ボーンへ辿って繰り返す
+                key = jointList[key].child;
+            }
+        });  // End forEach
+    }); // End update
 
 },
 function() {
