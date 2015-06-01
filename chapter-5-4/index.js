@@ -4,7 +4,10 @@ jThree( function( j3 ) {
     j3.Trackball();
 
     // jThreeのMMDオブジェクト取得
-    var kinect = j3.Kinect( "mmd");
+    var models = [];
+    for(var _bodyIndex = 0; _bodyIndex < 6 ; _bodyIndex++){
+        models[_bodyIndex] = j3.Kinect( "mmd#obj-zunko-" + _bodyIndex);
+    }
 
     // モーション更新関数
     var i = 0;
@@ -19,7 +22,7 @@ jThree( function( j3 ) {
         // jointデータ取得
         var joints = motionData[i++].joint;
         // モーション更新
-        kinect.update( joints );
+        models[bodyIndex].update( joints );
     });
 
 },
@@ -29,7 +32,7 @@ function() {
 
 var motionData = [
   {
-    "bodyIndex": 3,
+    "bodyIndex": 0,
     "joint": {
       "SpineBase": {
         "x": "0.1166515",
@@ -159,7 +162,7 @@ var motionData = [
     }
   },
   {
-     "bodyIndex": 3,
+     "bodyIndex": 1,
      "joint": {
       "SpineBase": {
         "x": "0.08687822",
@@ -289,7 +292,7 @@ var motionData = [
     }
   },
   {
-     "bodyIndex": 3,
+     "bodyIndex": 2,
      "joint": {
       "SpineBase": {
         "x": "0.0682296",
@@ -549,7 +552,7 @@ var motionData = [
     }
   },
   {
-     "bodyIndex": 3,
+     "bodyIndex": 4,
      "joint": {
       "SpineBase": {
         "x": "0.05433891",
@@ -679,7 +682,7 @@ var motionData = [
     }
   },
   {
-     "bodyIndex": 3,
+     "bodyIndex": 5,
      "joint": {
       "SpineBase": {
         "x": "0.04175935",
