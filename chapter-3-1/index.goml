@@ -1,0 +1,13 @@
+<goml>
+    <head>
+        <rdr frame="body" camera="camera:first" param="antialias: true; clearColor: #333;"/>
+    </head>
+    <body>
+        <scene>
+            <obj style="axis: 100; "/>
+            <camera style="position: 0 13 30; lookAtY: 11; cameraFar: 100000;">
+                <light type="Dir" style="position: 1 3 5; lightColor: #333;" />
+            </camera>
+        </scene>
+    </body>
+</goml>
