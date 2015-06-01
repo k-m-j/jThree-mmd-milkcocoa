@@ -29,7 +29,7 @@ jThree( function( j3 ) {
         vc1.normalize();
 
     // モーション更新関数
-    var i = 0
+    var i = 0;
     j3.update( function(d) {
         if (!motionData[i]) {
             j3.update(arguments.callee, false);
