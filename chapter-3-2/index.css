@@ -22,3 +22,25 @@ body > audio {
     width: 60%;
     left: 20%;
 }
+
+#stat-axis {
+    position: fixed;
+    top:30px;
+    left:5px;
+    width: 100%;
+    font-size: 30px;
+    color: white;
+}
+
+#console-axis {
+    position: fixed;
+    text-align: right;
+    top:50%;
+    right: 20px;
+    width: 150px;
+}
+
+.console-label {
+    color: white;
+    width: 50px;
+}
