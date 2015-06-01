@@ -26,7 +26,6 @@
               <light type="Dir" style="position: 1 3 5; lightColor: #ddd;" />
             </camera>
             <light type="Amb" style="lightColor: #222;" />
-            <!--<light type="Dir" style="position: 1 3 5;" />-->
         </scene>
     </body>
 </goml>
