@@ -1,0 +1,19 @@
+<goml>
+    <head>
+        <geo id="geo-cube" type="Cube" param="1 1 1" />
+        <geo id="geo-corn" type="Cylinder" param="0 0.5 2 8" />
+        <mtl id="mtl-blue" type="MeshPhong" param="color: #00f; specular: #fff; ambient: #003;" />
+
+        <rdr frame="body" camera="camera:first" param="antialias: true; clearColor: #333;"/>
+    </head>
+    <body>
+        <scene>
+            <obj style="axis: 100; "/>
+            <obj id="a" style=""/>
+            <camera style="position: 0 13 30; lookAtY: 11; cameraFar: 100000;">
+                <light type="Dir" style="position: 1 3 5; lightColor: #999999;" />
+            </camera>
+            <light type="Amb" style="lightColor: #666666;" />
+        </scene>
+    </body>
+</goml>
