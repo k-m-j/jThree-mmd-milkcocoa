@@ -19,6 +19,7 @@ jThree( function( j3 ) {
             }
         });
     });
+    j3.MMD.play();
 
     // ワールド座標系を更新する
     bones[0].updateMatrixWorld();
