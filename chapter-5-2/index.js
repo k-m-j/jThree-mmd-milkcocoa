@@ -3,36 +3,6 @@ jThree( function( j3 ) {
     $( "#loading" ).remove();
     j3.Trackball();
 
-    // 3D空間にマーカーオブジェクトを設置する
-    var html_txt = "";
-    var txr_txt = "";
-    var mesh_joint = "";
-    $.each(motionData[0].joint, function (key, val) {
-        // スプライト用ラベルの生成
-        html_txt += '<div id="txt-' + key + '">' + key + '</div>';
-        // ラベルテクスチャの生成
-        txr_txt += '<txr id="txr-' + key + '" html="#txt-' + key + '" />';
-        // スプライトの長さは文字列長に依存
-        var sprite_width = key.length * 0.3;
-        // Kinectで Right～ 部位は黒くする
-        var material = (key.indexOf("Right") != -1)? 'mtl-black':'mtl-red';
-        // マーカーオブジェクトの定義
-        mesh_joint += '<mesh id="kpos-bindex-' + key + '" geo="#geo-sphere" mtl="#'+material+'" style="positionY: 100 ;"><sprite mtl="#nameMtl" style="positionY: 0.5 ; mtlMap: #txr-' + key + '; scale: ' + sprite_width + ' 1 1;" /></mesh>';
-    });
-    // ラベル文字列の追加
-    j3("import").contents().find("#ContentField").append(html_txt);
-    // ラベルテクスチャの追加
-    j3("head").append(txr_txt);
-    // bodyIndexの数だけ置換して繰り返して、jThreeに追加
-    j3("#kinectMarkers").append(function(mesh_joint){
-        var str = '';
-        for(var i = 0;i<6;i++){
-            str += mesh_joint.replace(/bindex/g,i);
-        }
-        return str;
-    }(mesh_joint));
-
-
     // MMDのTHREE.jsオブジェクト取得
     var mmd = j3( "mmd" ).three(0);
     // bone情報を取得
@@ -52,28 +22,6 @@ jThree( function( j3 ) {
 
     // ワールド座標系を更新する
     bones[0].updateMatrixWorld();
-    // list に登録された Bones の座標をローカル→ワールド座標変換
-    // Bone指標オブジェクトの生成
-    var boneHandle = "";
-    $.each( jointList, function( key, val ) {
-        // 子ボーンが指定されていなかったら(末端なので)終了
-        if ( !val.child ) return;
-        // 対象のボーン取得
-        var bone = bones[ val.index ];
-        var child = bones[ jointList[ val.child ].index ];
-
-        // bone位置のワールド座標取得
-        var w_boneVector = new THREE.Vector3();
-        // 座標をワールド座標に変換
-        bone.parent.localToWorld( w_boneVector.copy( bone.position ) );
-
-        // Bone状態を表示させるハンドルオブジェクトの生成
-        boneHandle += '<mesh id="bonehandle-' + val.index + '" class="handle" geo="#geo-cube" mtl="#mtl-blue" style="position: '+w_boneVector.x+' '+w_boneVector.y+' '+w_boneVector.z+';"><mesh geo="#geo-corn" mtl="#mtl-blue" style="positionY:0.6;"></mesh></mesh>';
-        // コンソールに処理済みのボーン情報を表示(確認用)
-        console.log("bone[" + val.index + "] (" + bone.name + ") assoc_kinect[" + key + "] has child: bone[" + jointList[val.child].index + "] (" + child.name + ") assoc_kinect[" + val.child + "]");
-    } );
-    // Bone状態を表示させるハンドルオブジェクトの生成(jThreeに反映)
-    j3("#bonehandles").append(boneHandle);
 
     // 上半身→首 ベクトルと 左肩→右肩 のベクトル の法線を計測する
     var vc1 = getCrossVector(worldSubVectors(bones[jointList["Neck"].index],bones[jointList["SpineMid"].index])
@@ -173,14 +121,6 @@ jThree( function( j3 ) {
 
                 // Kinectの差分から算出したボーン回転のクォータニオンを求める
                 bone.quaternion.copy(getQuatanionFromVectors(boneBaseVector,jointLocalRot));
-
-                // 【表示用】ワールド座標系のボーン座標を算出
-                var w_boneVector = bone.position.clone();
-                bone.parent.localToWorld(w_boneVector);
-                // 【表示用】ジョイントハンドルの位置をモデルに合わせる
-                j3("#bonehandle-" + jointList[key].index).css('position','' + w_boneVector.x + ' ' + w_boneVector.y + ' ' + w_boneVector.z );
-                // 【表示用】決定したクォータニオンをジョイントハンドルにも適用
-                j3("#bonehandle-" + jointList[key].index).css('quaternion','' + bone.quaternion.x + ' ' + bone.quaternion.y + ' ' + bone.quaternion.z + ' ' + bone.quaternion.w );
 
                 // ボーンのマトリクスをワールド座標に反映
                 bone.updateMatrixWorld(true);
