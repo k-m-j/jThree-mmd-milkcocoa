@@ -1,5 +1,22 @@
 <goml>
     <head>
+        <geo id="geo-sphere" type="Sphere" param="0.3 64" />
+        <mtl id="mtl-red" type="MeshPhong" param="color: #f00; specular: #fff; ambient: #300;" />
+        <mtl id="mtl-black" type="MeshPhong" param="color: #000; specular: #fff; ambient: #000;" />
+        <import>
+            <style>
+                div {
+                position: absolute;
+                top: 0; height: 32px;
+                line-height:32px; font-size:32px;
+                color: #fff;
+                }
+            </style>
+            <div id="ContentField"></div>
+        </import>
+
+        <mtl id="nameMtl" type="Sprite" param="blending: 2; size: 1;" />
+
     <rdr frame="body" camera="camera:first" param="antialias: true; clearColor: #333;"/>
     </head>
     <body>
@@ -9,6 +26,7 @@
               <light type="Dir" style="position: 1 3 5; lightColor: #ddd;" />
             </camera>
             <light type="Amb" style="lightColor: #222;" />
+            <!--<light type="Dir" style="position: 1 3 5;" />-->
         </scene>
     </body>
 </goml>

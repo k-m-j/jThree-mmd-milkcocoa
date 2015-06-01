@@ -1,71 +1,4 @@
-jThree( function( j3 ) {
-
-    $( "#loading" ).remove();
-    j3.Trackball();
-
-    // 3D空間にマーカーオブジェクトを設置する
-    var html_txt = "";
-    var txr_txt = "";
-    var mesh_joint = "";
-    $.each(motionData[0].joint, function (key, val) {
-        // スプライト用ラベルの生成
-        html_txt += '<div id="txt-' + key + '">' + key + '</div>';
-        // ラベルテクスチャの生成
-        txr_txt += '<txr id="txr-' + key + '" html="#txt-' + key + '" />';
-        // スプライトの長さは文字列長に依存
-        var sprite_width = key.length * 0.3;
-        // Kinectで Right～ 部位は黒くする
-        var material = (key.indexOf("Right") != -1)? 'mtl-black':'mtl-red';
-        // マーカーオブジェクトの定義
-        mesh_joint += '<mesh id="kpos-bindex-' + key + '" geo="#geo-sphere" mtl="#'+material+'" style="positionY: 100 ;"><sprite mtl="#nameMtl" style="positionY: 0.5 ; mtlMap: #txr-' + key + '; scale: ' + sprite_width + ' 1 1;" /></mesh>';
-    });
-    // ラベル文字列の追加
-    j3("import").contents().find("#ContentField").append(html_txt);
-    // ラベルテクスチャの追加
-    j3("head").append(txr_txt);
-    // bodyIndexの数だけ置換して繰り返して、jThreeに追加
-    j3("scene").append(function(mesh_joint){
-        var str = '';
-        for(var i = 0;i<6;i++){
-            str += mesh_joint.replace(/bindex/g,i);
-        }
-        return str;
-    }(mesh_joint));
-
-
-    // モーションデータの流し込み
-    var i = 0;
-    j3.update( function(d){
-        if ( !motionData[ i ] ){
-            j3.update(arguments.callee,false);
-            return;
-        }
-        update(motionData[i++]);
-    });
-
-    // モーション更新関数
-    function update(data){
-        // bodyIndex取得
-        var bodyIndex = data.bodyIndex;
-        // jointデータ取得
-        var joints = data.joint;
-
-        // オブジェクトの位置をキネクトにあわせる
-        $.each(joints,function(key,val){
-            var position = new THREE.Vector3();
-            // 座標データを13倍に拡大してコピー
-            position.copy(this).multiplyScalar(13);
-            // 該当の関節位置を反映する
-            j3("#kpos-" + bodyIndex + "-" + key).css("position","" + position.x + " " + position.y + " " + position.z);
-        });
-    }
-
-},
-function() {
-    alert( "このブラウザはWebGLに対応していません。" );
-} );
-
-var motionData = [
+{'data':[
   {
     "bodyIndex": 3,
     "joint": {
@@ -7606,4 +7539,4 @@ var motionData = [
       }
     }
   }
-];
+]};
